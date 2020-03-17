@@ -6,10 +6,10 @@ class SelectionSort
 	{
 		Scanner input=new Scanner(System.in);
 		System.out.println("Enter the total number of elements in array");
-		int len=input.nextInt();
-		int[] array=new int[len];
+		int length=input.nextInt();
+		int[] array=new int[length];
 		System.out.println("Enter the numbers");
-		for(int i=0;i<len;i++)
+		for(int i=0;i<length;i++)
 		{
 			array[i]=input.nextInt();
 		}
