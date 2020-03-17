@@ -5,9 +5,14 @@ class DisariumNumber
   {
     Scanner input=new Scanner(System.in);
     int number=input.nextInt();
-    String s=String.valueOf(number);
     int temp=number;
-    double position=s.length();
+    double position=0;
+    int temp1=number;//for counting no of digits
+    while(temp1>0){
+		position+=1;
+		temp1/=10;	
+    }
+   
     int sum=0;
     while(temp>0)
     {
