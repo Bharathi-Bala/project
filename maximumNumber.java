@@ -19,11 +19,12 @@ class MaximumNumber
 		Collections.sort(numbers);
 		Collections.reverse(numbers);
 		
-		String result="";
+		int result=0;
 		for(int a:numbers)
 		{
-			result+=a;
+			result=result*10+a;
 		}
+		
 		System.out.println("Maximum Number that can be obtained from the given number : "+result);
 	}
 }
