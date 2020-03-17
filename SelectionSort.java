@@ -6,8 +6,8 @@ class SelectionSort
 	{
 		Scanner input=new Scanner(System.in);
 		System.out.println("Enter the total number of elements in array");
-		int length=input.nextInt();
-		int[] array=new int[length];
+		int length=input.nextInt();//total no of elements
+		int[] array=new int[length];//array that contains element
 		System.out.println("Enter the numbers");
 		for(int i=0;i<length;i++)
 		{
@@ -20,7 +20,7 @@ class SelectionSort
 			{
 				if(array[i]>array[j])
 				{
-					int temp=array[i];
+					int temp=array[i];//temporary variable that is used for swapping 
 					array[i]=array[j];
 					array[j]=temp;
 				}
