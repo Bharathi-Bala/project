@@ -1,16 +1,18 @@
 import java.util.Arrays;
 import java.util.Scanner;
- class RemoveWordFromSentence
+ class RemoveString
 {
   public static void main(String ar[])
   {
+   
     Scanner input=new Scanner(System.in);
     System.out.println("Enter the Sentence  ?");
     String sentence=input.nextLine();
     System.out.println("Enter the word/letter to be removed ?");
     String remove=input.nextLine();
     
-
+//using arrays
+   
     if(sentence.contains(remove))
     {
       String output="";
@@ -26,9 +28,24 @@ import java.util.Scanner;
     {
       System.out.println("The Sentence didn't contain the word to be removed !");
     }
+   
+//using substring
+   
+    String result="";
+    for(int i=0;i<sentence.length();i++){
+      if(sentence.substring(i,i+remove.length()).equals(remove) && (i+remove.length()<=sentence.length()))
+    {
 
+        i=(i+remove.length()-1);
+      
+      }
+      else{
+        result+=sentence.substring(i,i+1);
+      }
+    }
+    System.out.println("result  : "+result);
 
-    //another way using replace;
+    // using replace;
     String replace=sentence.replace(remove,"");
     System.out.println(replace);
   }
