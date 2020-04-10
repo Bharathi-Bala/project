@@ -1,4 +1,5 @@
-import jimport java.util.*;
+import java.util.Scanner;
+import java.util.Random;
 class MineSweeper{
 	int rows,cols,mines,cellCount,cellCntExclBomb;
 	int[][] boardValue;
