@@ -5,6 +5,8 @@ import java.util.Scanner;
 public class SnakeAndLadder {
     HashMap<Integer,Integer> ladder=new HashMap<Integer, Integer>();
     HashMap<Integer,Integer> snake=new HashMap<Integer, Integer>();
+    int[][] board = new int[10][10];
+    String[][] boardShown=new String[10][10];
     public  SnakeAndLadder(){
         ladder.put(1,38);
         ladder.put(4,14);
@@ -24,6 +26,27 @@ public class SnakeAndLadder {
         snake.put(95,75);
         snake.put(98,79);
 
+        int num = 100;
+        int num1 = 1;
+
+        for(int i=0;i<board.length;i+=2)
+        {
+            for(int j=0;j<board[i].length;j++)
+            {
+                board[i][j]=num;
+                num--;
+            }
+            num-=10;
+        }
+        for(int i=9;i>0;i-=2)
+        {
+            for(int j=0;j<board[i].length;j++)
+            {
+                board[i][j]=num1;
+                num1++;
+            }
+            num1+=10;
+        }
     }
     Random die=new Random();
     public int[] rollTheDie(int player,int square){
@@ -81,7 +104,39 @@ public class SnakeAndLadder {
                 }
                 System.out.println();
             }
+            showBoard(setboardShown(players));
         }
+    }
+    public String[][] setboardShown(int[] players){
+        boardShown=new String[10][10];
+        for(int i=0;i<players.length;i++){
+            for(int j=0;j<board.length;j++){
+                for(int k=0;k<board.length;k++){
+                    if(players[i]==board[j][k]){
+                        boardShown[j][k]="P"+(i+1);
+                    }
+                    else if(boardShown[j][k]==null){
+                        boardShown[j][k]=Integer.toString(board[j][k]);
+                    }
+
+                }
+            }
+        }
+        return boardShown;
+    }
+    public  void showBoard(String[][] board)
+    {
+        for(int i=0;i<board.length;i++) {
+            for (int j = 0; j < board.length; j++) {
+                if (board[i][j].startsWith("P")) {
+                        System.out.print("\033[4m\033[1m" + board[i][j] + "\033[0m\t\t");
+                } else {
+                        System.out.print(board[i][j] + "\t\t");
+                }
+            }
+            System.out.println("\n\n");
+        }
+
     }
     public static void main(String[] args) {
         SnakeAndLadder game=new SnakeAndLadder();
