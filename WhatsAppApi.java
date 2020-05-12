@@ -1,25 +1,28 @@
 package com.whatsapp;
 
+import java.util.HashMap;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 class Contacts {
-
-    int cnt_id;
+    private int cnt_id;
     private String cnt_name;
-    static int count=0;
     private String cnt_number;
+    static int count=0;
 
-    public Contacts() {
+    private static HashMap<Integer,Contacts> listOfContacts=new HashMap<Integer, Contacts>();
+
+    public Contacts(String cnt_name, String cnt_number) {
         count+=1;
-        this.cnt_id=count;
+        this.cnt_id = count;
+        this.cnt_name = cnt_name;
+        this.cnt_number = cnt_number;
     }
+
     public int getCnt_id() {
         return cnt_id;
     }
 
     public void setCnt_id(int cnt_id) {
-
         this.cnt_id = cnt_id;
     }
 
@@ -39,29 +42,35 @@ class Contacts {
         this.cnt_number = cnt_number;
     }
 
+    public static HashMap<Integer, Contacts> getListOfContacts() {
+        return listOfContacts;
+    }
+
+    public  void setListOfContacts(Contacts c) {
+        listOfContacts.put(c.cnt_id,c);
+    }
 }
 
-class Messages {
+class Message {
+    private int msg_Id;
+    private String text;
+    private String msg_dir;
 
-    int msgId;
-    String text;
-    String msgDirection;
-    static int count=0;
+    static int count;
 
-    public String getMsgDirection() {
-        return msgDirection;
+    public Message(String text, String msg_dir) {
+        count+=1;
+        this.msg_Id =count;
+        this.text = text;
+        this.msg_dir = msg_dir;
     }
 
-    public void setMsgDirection(String msgDirection) {
-        this.msgDirection = msgDirection;
+    public int getMsg_Id() {
+        return msg_Id;
     }
 
-    public int getMsgId() {
-        return msgId;
-    }
-
-    public void setMsgId(int msgId) {
-        this.msgId = msgId;
+    public void setMsg_Id(int msg_Id) {
+        this.msg_Id = msg_Id;
     }
 
     public String getText() {
@@ -72,228 +81,249 @@ class Messages {
         this.text = text;
     }
 
-    public Messages(String text, String msgDirection) {
-        count+=1;
-        this.msgId = count;
-        this.text = text;
-        this.msgDirection = msgDirection;
+    public String getMsg_dir() {
+        return msg_dir;
     }
 
+    public void setMsg_dir(String msg_dir) {
+        this.msg_dir = msg_dir;
+    }
 }
 
 class Chats {
+    private int ch_id;
+    private  Contacts contact;
+    private ArrayList<Message> listOfMsg=new ArrayList<Message>();
+    private boolean status;
+    private boolean block;
+    private static HashMap<Integer,Chats> listOfChats=new HashMap<Integer, Chats>();
 
-    int chatId;
-    Contacts c;
-    ArrayList<Messages> listOfMsgs=new ArrayList<Messages>();
     static int count=0;
-    
-    public ArrayList<Messages> getListOfMsgs() {
-        return listOfMsgs;
+
+    Chats(){
+      count+=1;
+      this.ch_id=count;
+    }
+    public int getCh_id() {
+        return ch_id;
     }
 
-    public void setListOfMsgs(ArrayList<Messages> listOfMsgs) {
-        this.listOfMsgs = listOfMsgs;
-    }
-    
-    public Chats(int chatId, Contacts c,Messages msg) {
-        count+=1;
-        this.chatId = 1;
-        this.c = c;
-        listOfMsgs.add(msg);
+    public void setCh_id(int ch_id) {
+        this.ch_id = ch_id;
     }
 
+    public Contacts getContact() {
+        return contact;
+    }
+
+    public void setContact(Contacts contact) {
+        this.contact = contact;
+    }
+
+    public ArrayList<Message> getListOfMsg() {
+        return listOfMsg;
+    }
+
+    public void setListOfMsg(Message msg) {
+        this.listOfMsg.add(msg);
+    }
+
+    public static HashMap<Integer, Chats> getListOfChats() {
+        return listOfChats;
+    }
+
+    public static void setListOfChats(Chats chat) {
+        Chats.listOfChats.put(chat.contact.getCnt_id(),chat);
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    public boolean isBlock() {
+        return block;
+    }
+
+    public void setBlock(boolean block) {
+        this.block = block;
+    }
 }
-
-class WhatsAppModel {
-
-    ArrayList<Chats> listOfChats=new ArrayList<Chats>();
-    ArrayList<Contacts> listOfContacts=new ArrayList<Contacts>();
-    Scanner inpt = new Scanner(System.in);
+class WhatsApp {
 
     public void splitInput(String input){
-        String[] inp=input.split(" ");
-        String method=inp[0];
-        String url=inp[1];
-        if(method.equals("Post")){
-            post(url);
-        }
-        else if(method.equals("Get") ){
-            get(url);
-        }
-        else if(method.equals("Delete") ){
-            delete(url);
-        }
-        else if(method.equals("Put")){
-            updateContact(url);
-        }
-    }
 
-    public void updateContact(String url){
-        int id= Integer.parseInt(url.substring(10));
-        System.out.print("what do you want to change ?(name/number)");
-        String change=inpt.next();
-        for(Contacts c:listOfContacts){
-            if(c.cnt_id==id){
-                if(change.equals("name")){
-                    System.out.print("Enter the name ?  ");
-                    String name=inpt.next();
-                    c.setCnt_name(name);
-                    System.out.println("Name has been updated !");
-                }
-                else{
-                    System.out.print("Enter the number ?  ");
-                    String number=inpt.next();
-                    c.setCnt_number(number);
-                    System.out.println("Number has been updated !");
-                }
-                break;
-            }
-        }
-    }
+         String[] arr=input.split(" ");
+         if(arr[0].equals("Post")){
+             post(arr);
+         }
+         else if(arr[0].equals("Get")){
+             get(arr);
+         }
+         else if(arr[0].equals("Put")){
+             put(arr);
+         }
+         else if(arr[0].equals("Delete")){
+             delete(arr);
+         }
+         else{
+             System.out.println("No such method");
+         }
 
-    public void delete(String url){
+    }
+    public void delete(String[] arr){
+        String url=arr[1];
         if(url.startsWith("/contacts")){
-            int id= Integer.parseInt(url.substring(10,url.length()));
-            for(Contacts c:listOfContacts){
-                if(c.cnt_id==id){
-                    int indx=listOfContacts.indexOf(c);
-                    listOfContacts.remove(indx);
-                    System.out.println("Contact Deleted !");
-                    break;
-                }
-            }
+            int id=Integer.parseInt(url.substring(10));
+            Contacts.getListOfContacts().remove(id);
+            System.out.println("Contact deleted !!");
         }
-        else if(url.startsWith("/chats") && url.endsWith("clear")){
-            String[] spitUrl=url.split("/");
-            int id= Integer.parseInt(spitUrl[2]);
-            int index=chatIndex(id);
-            listOfChats.get(index).listOfMsgs.clear();
-            System.out.println("Cleared Chat History !!!");
+        else if(url.startsWith("/chats")){
+            int id=Integer.parseInt(url.substring(7));
+            Chats.getListOfChats().remove(id);
+            System.out.println("Chat deleted !!");
+        }
+        else{
+            System.out.println("No such url!!");
+        }
+    }
+    public  void put(String[] arr){
+        String url=arr[1];
+        if(url.startsWith("/contacts")){
+            int id=Integer.parseInt(url.substring(10));
+            String[] part=arr[2].split(":");
+            String pro=part[0];
+            String val=part[1];
+            if(pro.equals("name")){
+                Contacts.getListOfContacts().get(id).setCnt_name(val);
+                System.out.println("Name Updated !");
+            }
+            else if(pro.equals("number")){
+                Contacts.getListOfContacts().get(id).setCnt_number(val);
+                System.out.println("Number Updated !");
+            }
+            else{
+                System.out.print("No such property found to update !");
+            }
         }
         else{
             int id=Integer.parseInt(url.substring(7));
-            int index=chatIndex(id);
-            listOfChats.remove(index);
-            System.out.println("Deleted Chat  !!!");
+            String status=arr[2];
+            if(status.equals("archieve")){
+                Chats.getListOfChats().get(id).setStatus(true);
+                System.out.println(Chats.getListOfChats().get(id).getContact().getCnt_name()+"'s chat has been archieved !!!");
+            }
+            else if(status.equals("unarchieve")){
+                Chats.getListOfChats().get(id).setStatus(false);
+                System.out.println(Chats.getListOfChats().get(id).getContact().getCnt_name()+"'s chat has been Unarchieved !!!");
+            }
+            else if(status.equals("block")){
+                Chats.getListOfChats().get(id).setBlock(true);
+                System.out.println(Chats.getListOfChats().get(id).getContact().getCnt_name()+"'s chat has been blocked !!!");
+            }
+            else if(status.equals("unblock")){
+                Chats.getListOfChats().get(id).setBlock(false);
+                System.out.println(Chats.getListOfChats().get(id).getContact().getCnt_name()+"'s chat has been Unblocked !!!");
+            }
+           else{
+                System.out.println("Something went wrong !!!");
+            }
         }
 
     }
-
-    public void get(String url){
+    public void post(String[] arr){
+        String url=arr[1];
         if(url.equals("/contacts")){
-            for(Contacts c:listOfContacts){
-                System.out.println(c.getCnt_id()+"  " +c.getCnt_name());
-            }
-        }
-        else if(url.equals("/chats")){
-            viewChat();
-        }
-        else{
-            if(url.startsWith("/contacts")){
-                int id= Integer.parseInt(url.substring(10,url.length()));
-                for(Contacts c:listOfContacts){
-                    if(c.getCnt_id()==id){
-                        System.out.println(c.getCnt_name()+" "+c.getCnt_number());
-                    }
-                }
-            }
-            else{
-                int id=Integer.parseInt(url.substring(7));
-                viewPersonChat(id);
-            }
-        }
-    }
-
-    public void post(String url){
-        if(url.equals("/contacts")) {
-            addContact();
+            String name=arr[2];
+            String number=arr[3];
+            Contacts c=new Contacts(name,number);
+            c.setListOfContacts(c);
+            System.out.println("Contact created with id : "+c.getCnt_id());
         }
         else if(url.startsWith("/chats/")){
             int id=Integer.parseInt(url.substring(7));
-            postMessage(id);
-        }
-    }
-
-    public void addContact(){
-        System.out.print("Enter the name ?  ");
-        String name=inpt.next();
-        System.out.print("Enter the Phone number ?  ");
-        String phnumber=inpt.next();
-        Contacts c = new Contacts();
-        c.setCnt_number(phnumber);
-        c.setCnt_name(name);
-        System.out.println("Successfully added ..\n" + "Name : " + c.getCnt_name() + " Phone number : " + c.getCnt_number());
-        listOfContacts.add(c);
-    }
-
-    public void postMessage(int id){
-        Scanner sc=new Scanner(System.in);
-        System.out.print("Enter the Message ?  ");
-        String text=sc.nextLine();
-        System.out.print("Enter the MsgDirection ?(in/out)  ");
-        String msdr=inpt.next();
-        Messages msg=new Messages(text,msdr);
-        Contacts cont = null;
-        for(Contacts c: listOfContacts){
-            if(c.getCnt_id()==id){
-                cont=c;
-                break;
+            String msg_txt=arr[2];
+            String msg_dir=arr[3];
+            Contacts c=Contacts.getListOfContacts().get(id);
+            Message msg=new Message(msg_txt,msg_dir);
+            if(Chats.getListOfChats().containsKey(id)){
+                if(Chats.getListOfChats().get(id).isBlock()){
+                    System.out.println("Can't send message since the chat has been blocked !!");
+                }
+                else{
+                    Chats.getListOfChats().get(id).setListOfMsg(msg);
+                    System.out.println("Message sent !");
+                }
+            }
+            else{
+                Chats ct=new Chats();
+                ct.setContact(c);
+                ct.setListOfMsg(msg);
+                Chats.setListOfChats(ct);
+                Chats.setListOfChats(ct);
+                System.out.println("Message sent !!");
             }
         }
-        int indx=chatIndex(cont.cnt_id);
-        if(indx==-1){
-            Chats chat=new Chats(0,cont,msg);
-            listOfChats.add(chat);
-            System.out.println("message sent!!");
-        }
-        else{
-            listOfChats.get(indx).listOfMsgs.add(msg);
-            System.out.println("message sent!!");
-        }
     }
-
-    public void viewChat(){
-        for(Chats chat:listOfChats){
-            int msgs=chat.listOfMsgs.size()-1;
-            System.out.println("\n"+chat.c.getCnt_name()+"\t"+chat.listOfMsgs.get(msgs).text+"\t"+chat.listOfMsgs.get(msgs).msgDirection+"\n");
+    public void get(String[] arr){
+        String url=arr[1];
+        if(url.equals("/contacts")){
+            viewContact(Contacts.getListOfContacts());
         }
-    }
-
-    public void viewPersonChat(int id){
-        int indx=chatIndex(id);
-       System.out.println("\n"+listOfChats.get(indx).c.getCnt_name()+"\n");
-        for(Messages msg: listOfChats.get(indx).listOfMsgs){
-            System.out.println(msg.text+"\t  "+msg.msgDirection);
-
+        else if(url.startsWith("/contacts")){
+            int id=Integer.parseInt(url.substring(10));
+            System.out.println(Contacts.getListOfContacts().get(id).getCnt_name()+"\t\t"+Contacts.getListOfContacts().get(id).getCnt_number());
         }
-    }
-
-    public int chatIndex(int id){
-        int indx=-1;
-        for(Chats ct:listOfChats){
-            if(ct.c.getCnt_id()==id){
-               indx=listOfChats.indexOf(ct);
+        else if(url.equals("/chats")){
+            viewChats(Chats.getListOfChats());
+        }
+        else if(url.equals("/chats/archieved")){
+            System.out.println("Archieved Chats : ");
+            for (Chats chat : Chats.getListOfChats().values()){
+                if(chat.isStatus()){
+                    System.out.println(chat.getContact().getCnt_name()+"\t\t"+chat.getListOfMsg().get(chat.getListOfMsg().size()-1).getText()+"\t\t"+chat.getListOfMsg().get(chat.getListOfMsg().size()-1).getMsg_dir());
+                }
             }
         }
-        return indx;
+        else if(url.startsWith("/chats/")){
+            int id=Integer.parseInt(url.substring(7));
+            Chats c=Chats.getListOfChats().get(id);
+            ArrayList<Message> msgs=c.getListOfMsg();
+            System.out.println(c.getContact().getCnt_name());
+            for(Message m:msgs){
+               System.out.println(m.getText()+"\t\t"+m.getMsg_dir()+"\n");
+            }
+        }
     }
+    public void viewChats(HashMap<Integer, Chats> listOfChats){
+        for (Chats chat : listOfChats.values()){
+            if(chat.isStatus()==false){
+                System.out.println(chat.getContact().getCnt_name()+"\t\t"+chat.getListOfMsg().get(chat.getListOfMsg().size()-1).getText()  +"\t\t"+chat.getListOfMsg().get(chat.getListOfMsg().size()-1).getMsg_dir());
+            }
+        }
+    }
+    public void viewContact(HashMap<Integer, Contacts> listOfContacts){
+        Iterator<Map.Entry<Integer, Contacts>> itr = listOfContacts.entrySet().iterator();
 
+        while(itr.hasNext())
+        {
+            Map.Entry<Integer, Contacts> entry = itr.next();
+            System.out.println(  entry.getKey() + "\t\t" + entry.getValue().getCnt_name()+"\t\t"+entry.getValue().getCnt_number()+"\n");
+        }
+
+    }
     public static void main(String[] args) {
-    
-        WhatsAppModel obj=new WhatsAppModel();
-        
-        do {
-            Scanner input=new Scanner(System.in);
-            System.out.println("Enter the command ?");
-            String command = input.nextLine();
-            obj.splitInput(command);
-            if(command.equals("no")){
-                return;
-            }
+        String input;
+        WhatsApp w=new WhatsApp();
+        do{
+            Scanner sc=new Scanner(System.in);
+            System.out.println("Enter your request ? or else enter 'end' to stop!");
+            input=sc.nextLine();
+            w.splitInput(input);
         }while(true);
-        
     }
 }
-
 
