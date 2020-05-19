@@ -465,11 +465,13 @@ class WhatsApp {
     }
     public static void main(String[] args) {
 
-        WhatsApp w = new WhatsApp();	
         do {
             Scanner sc = new Scanner(System.in);
             System.out.println("Enter your request ? ");
-            String input = sc.nextLine();
+            String input= sc.nextLine();
+            if(input.equals("end")){
+                break;
+            }
             w.splitInput(input);
         } while (true);
     }
