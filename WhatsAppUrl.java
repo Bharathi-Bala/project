@@ -207,7 +207,6 @@ class Status {
     }
 
 }
-
 class WhatsApp {
 
     public void splitInput(String input){
@@ -303,7 +302,7 @@ class WhatsApp {
                 System.out.println(Chats.getListOfChats().get(id).getContact().getCnt_name()+"'s chat has been Unblocked !!!");
             }
            else{
-                System.out.println("Something went wrong !!!");
+                System.out.println("Url format is wrong!!!");
             }
         }
 
@@ -340,6 +339,25 @@ class WhatsApp {
                 System.out.println("Message sent !!");
             }
         }
+        else if(url.equals("/status/my_status")){
+            System.out.println("Entered my status");
+            String msg_txt=arr[2];
+            Contacts c = new Contacts();
+            int id=c.getCnt_id();
+            System.out.println(id+" id ");
+            if(Status.getListOfStatus().containsKey(0)){
+                System.out.println("Already there exit your status");
+                Status.getListOfStatus().get(id).setStatuses(msg_txt);
+            }
+            else{
+                Status st=new Status();
+                st.setContact(c);
+                st.setStatuses(msg_txt);
+                Status.setListOfStatus(st);
+                System.out.println("my status "+Status.getListOfStatus().get(id).getStatuses().size());
+                System.out.println("status created");
+            }
+        }
         else if(url.startsWith("/status/")){
             if(arr.length==3){
                 int id=Integer.parseInt(url.substring(8));
@@ -348,21 +366,19 @@ class WhatsApp {
                 System.out.println(id+" "+msg_txt);
                 Contacts c=Contacts.getListOfContacts().get(id);
                 if(Status.getListOfStatus().containsKey(id)){
-                    System.out.println("Already there exit a status");
                     Status.getListOfStatus().get(id).setStatuses(msg_txt);
                     System.out.println(c.getCnt_name()+" "+ Status.getListOfStatus().get(id).getStatuses().size());
+                    System.out.println("Status posted!!");
                 }
                 else{
-                    System.out.println("status created");
                     Status st=new Status();
                     st.setContact(c);
                     st.setStatuses(msg_txt);
                     Status.setListOfStatus(st);
-                    System.out.println(c.getCnt_name()+" "+Status.getListOfStatus().get(id).getStatuses().size());
+                    System.out.println("Status posted!!");
                 }
             }
             else {
-                System.out.println("replying to a status ");
                 int id=Integer.parseInt(url.substring(8));
                 int st_id=Integer.parseInt(arr[2]);
                 String msg_txt=arr[3];
@@ -430,14 +446,20 @@ class WhatsApp {
         }
     }
     public void viewStatuses(){
-        System.out.println("\nStatus : \n");
+        boolean my=Status.getListOfStatus().containsKey(0);
+        if(my){
+            System.out.println("\nMy Status : \n");
+            System.out.println(Status.getListOfStatus().get(0).getStatuses().get( Status.getListOfStatus().get(0).getStatuses().size()-1));
+        }
+        System.out.println("\nOther Status : \n");
         for(Status status: Status.getListOfStatus().values()){
-            if(status.isMute()==false){
+            if(!status.isMute() && status.getContact().getCnt_id()!=0 ){
                 System.out.println(status.getContact().getCnt_name()+"\t\t"+status.getStatuses().get(status.getStatuses().size()-1)+"\n");
             }
         }
         mutedStatuses();
     }
+
     public void mutedStatuses(){
         System.out.println("\nMuted Status : \n");
         for(Status status: Status.getListOfStatus().values()){
@@ -465,6 +487,8 @@ class WhatsApp {
     }
     public static void main(String[] args) {
 
+        WhatsApp w = new WhatsApp();
+
         do {
             Scanner sc = new Scanner(System.in);
             System.out.println("Enter your request ? ");
@@ -476,4 +500,3 @@ class WhatsApp {
         } while (true);
     }
 }
-
